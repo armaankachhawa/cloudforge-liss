@@ -1,1 +1,1 @@
-scene_id,aoi,date,type,cloud_percent,crs,resolution,path
+scene_id,aoi,date,type,cloud_percent,crs,resolution,bands,dtype,nodata,width,height,path,sha256

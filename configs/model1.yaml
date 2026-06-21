@@ -7,6 +7,10 @@ data:
   output_channels: 3
   manifest: data/processed/manifests/patch_manifest.csv
 
+model:
+  name: attention_resunet
+  base_channels: 32
+
 training:
   epochs: 40
   batch_size: 4
@@ -14,6 +18,8 @@ training:
   optimizer: adamw
   mixed_precision: true
   device: auto
+  workers: 0
+  checkpoint_dir: checkpoints/model1
 
 loss:
   masked_l1: 0.60

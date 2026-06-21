@@ -37,6 +37,24 @@ Official portals verified:
 
 Bhoonidhi's current portal notice states that satellite data at 5 m and coarser is free and open. The Browse & Order portal currently requires user login for account-bound ordering/downloading.
 
+The authenticated Chrome control channel was unavailable on the latest continuation despite Chrome, the Codex extension and native host all passing their installation/health checks. No portal selections or downloads have therefore been claimed as completed.
+
+## Completed — Offline pipeline implementation
+
+- Metadata-preserving GeoTIFF audit, alignment and writing
+- Rough three-class mask generation and trainable mask U-Net
+- Real-cloud-texture synthetic supervision with scene-level splits
+- No-AI blank-mask baseline
+- Core Attention ResUNet and optional auxiliary-channel variant
+- Masked L1, SSIM, spectral-angle and edge losses
+- CPU/CUDA-aware training, tiled inference and test-time uncertainty
+- Clear-pixel-preserving output composition
+- Masked PSNR, SSIM, MAE, RMSE, SAM and NDVI evaluation
+- Confidence map, processing report and Streamlit demo
+- Automated geospatial/model/pipeline tests
+
+Verification status: 13 tests pass, lint is clean and the Streamlit page loads without exceptions.
+
 ## User handoff required
 
 1. Open the Bhoonidhi login page in Chrome.
