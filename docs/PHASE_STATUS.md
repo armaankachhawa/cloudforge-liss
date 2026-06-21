@@ -37,7 +37,9 @@ Official portals verified:
 
 Bhoonidhi's current portal notice states that satellite data at 5 m and coarser is free and open. The Browse & Order portal currently requires user login for account-bound ordering/downloading.
 
-The authenticated Chrome control channel was unavailable on the latest continuation despite Chrome, the Codex extension and native host all passing their installation/health checks. No portal selections or downloads have therefore been claimed as completed.
+The authenticated Chrome control channel was unavailable on the latest continuation despite Chrome, the Codex extension and native host all passing their installation/health checks. A fresh Profile 5 window was opened with user approval; discovery of the Bhoonidhi login and registration tabs succeeded, but control failed again when the login page was read. The in-app Browser also failed to attach its public Bhoonidhi page. Per the browser plugin recovery policy, the next step is reinstalling the Chrome plugin from the Codex plugin UI rather than attempting another workaround.
+
+A filesystem audit also found no `.tif` or `.tiff` products in the project workspace or the user's Downloads folder. Consequently, no real LISS-IV scene, trained checkpoint or real-scene metric is represented as completed.
 
 ## Completed — Offline pipeline implementation
 
