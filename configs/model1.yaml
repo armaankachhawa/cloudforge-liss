@@ -1,0 +1,26 @@
+project: CloudForge-LISS
+seed: 42
+
+data:
+  patch_size: 128
+  input_channels: 5
+  output_channels: 3
+  manifest: data/processed/manifests/patch_manifest.csv
+
+training:
+  epochs: 40
+  batch_size: 4
+  learning_rate: 0.0002
+  optimizer: adamw
+  mixed_precision: true
+  device: auto
+
+loss:
+  masked_l1: 0.60
+  masked_ssim: 0.20
+  spectral_angle: 0.15
+  edge: 0.05
+
+inference:
+  preserve_clear_pixels: true
+  output_dir: outputs

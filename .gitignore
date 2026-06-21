@@ -1,0 +1,28 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+
+# Large or generated geospatial/model artifacts
+data/raw/**
+data/processed/aligned/**
+data/processed/masks/**
+data/processed/patches/**
+checkpoints/**
+outputs/**
+*.tif
+*.tiff
+*.pth
+*.pt
+
+# Keep directory placeholders and small manifests
+!data/**/.gitkeep
+!data/processed/manifests/**
+!checkpoints/.gitkeep
+!outputs/.gitkeep

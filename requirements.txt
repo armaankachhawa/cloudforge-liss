@@ -1,0 +1,29 @@
+# Core numerical and tabular stack
+numpy>=1.26,<3
+pandas>=2.2,<3
+scipy>=1.12,<2
+
+# Geospatial I/O. Rasterio ships compatible GDAL runtime wheels on Windows;
+# do not install an unrelated standalone `gdal` wheel into this environment.
+rasterio>=1.3.10,<2
+geopandas>=0.14.4,<2
+pyproj>=3.6,<4
+shapely>=2.0,<3
+
+# Imaging, augmentation and metrics
+opencv-python-headless>=4.9,<5
+albumentations>=1.4,<3
+scikit-image>=0.22,<1
+matplotlib>=3.8,<4
+torchmetrics>=1.3,<2
+
+# Training and application
+torch>=2.3,<3
+torchvision>=0.18,<1
+tqdm>=4.66,<5
+PyYAML>=6,<7
+streamlit>=1.35,<2
+
+# Quality and tests
+pytest>=8,<9
+ruff>=0.5,<1
