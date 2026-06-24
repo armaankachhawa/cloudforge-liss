@@ -9,6 +9,7 @@ from pathlib import Path
 
 import numpy as np
 
+from src.bhoonidhi_zip import product_shape, read_liss_window
 from src.create_masks import CLOUD, SHADOW, rule_based_mask
 from src.geo_utils import normalize_percentile, read_raster
 
@@ -42,6 +43,28 @@ def sample_patch(array: np.ndarray, size: int, rng: random.Random) -> np.ndarray
     return array[:, row : row + size, col : col + size]
 
 
+def load_scene(path: Path) -> tuple[Path, np.ndarray | None]:
+    """Load ordinary GeoTIFF scenes eagerly; read ZIP products lazily."""
+    if path.suffix.lower() == ".zip":
+        return path, None
+    return path, normalize_percentile(read_raster(path).array)[0]
+
+
+def sample_scene_patch(
+    scene: tuple[Path, np.ndarray | None], size: int, rng: random.Random
+) -> np.ndarray:
+    path, cached = scene
+    if cached is not None:
+        return sample_patch(cached, size, rng)
+    height, width = product_shape(path)
+    if height < size or width < size:
+        raise ValueError(f"Product {path.name} is smaller than patch size {size}")
+    row = rng.randint(0, height - size)
+    col = rng.randint(0, width - size)
+    patch = read_liss_window(path, row, col, size)
+    return normalize_percentile(patch)[0]
+
+
 def generate_dataset(
     clear_paths: list[Path],
     cloudy_paths: list[Path],
@@ -54,18 +77,16 @@ def generate_dataset(
         raise ValueError("At least one clear and one cloudy raster are required")
     rng = random.Random(seed)
     output_dir.mkdir(parents=True, exist_ok=True)
-    clear_cache = [(path, normalize_percentile(read_raster(path).array)[0]) for path in clear_paths]
-    cloudy_cache = [
-        (path, normalize_percentile(read_raster(path).array)[0]) for path in cloudy_paths
-    ]
+    clear_cache = [load_scene(path) for path in clear_paths]
+    cloudy_cache = [load_scene(path) for path in cloudy_paths]
     manifest_path = output_dir.parent / "manifests" / "patch_manifest.csv"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, str | int | float]] = []
     for index in range(count):
         clear_path, clear_scene = rng.choice(clear_cache)
         cloudy_path, cloudy_scene = rng.choice(cloudy_cache)
-        target = sample_patch(clear_scene, patch_size, rng)
-        texture = sample_patch(cloudy_scene, patch_size, rng)
+        target = sample_scene_patch((clear_path, clear_scene), patch_size, rng)
+        texture = sample_scene_patch((cloudy_path, cloudy_scene), patch_size, rng)
         labels = rule_based_mask(texture)
         if not np.any(labels > 0):
             continue
@@ -99,12 +120,12 @@ def generate_dataset(
 def assign_scene_splits(rows: list[dict[str, str | int | float]], seed: int) -> None:
     """Assign whole clear scenes to splits to prevent spatial/temporal leakage."""
     scenes = sorted({str(row["clear_scene"]) for row in rows})
-    if len(scenes) < 3:
+    if len(scenes) < 2:
         raise ValueError(
-            "At least three independent clear scenes are required for train/validation/test splits"
+            "At least two independent clear scenes are required for a train/validation split"
         )
     random.Random(seed).shuffle(scenes)
-    train_count = min(max(round(len(scenes) * 0.70), 1), len(scenes) - 2)
+    train_count = min(max(round(len(scenes) * 0.70), 1), len(scenes) - 1)
     remaining = len(scenes) - train_count
     validation_count = max(1, remaining // 2)
     assignment = {scene: "train" for scene in scenes[:train_count]}
@@ -127,8 +148,16 @@ def main() -> None:
     parser.add_argument("--patch-size", type=int, default=128)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
-    clear = sorted(args.clear_dir.glob("*.tif")) + sorted(args.clear_dir.glob("*.tiff"))
-    cloudy = sorted(args.cloudy_dir.glob("*.tif")) + sorted(args.cloudy_dir.glob("*.tiff"))
+    clear = (
+        sorted(args.clear_dir.glob("*.tif"))
+        + sorted(args.clear_dir.glob("*.tiff"))
+        + sorted(args.clear_dir.glob("*.zip"))
+    )
+    cloudy = (
+        sorted(args.cloudy_dir.glob("*.tif"))
+        + sorted(args.cloudy_dir.glob("*.tiff"))
+        + sorted(args.cloudy_dir.glob("*.zip"))
+    )
     manifest = generate_dataset(
         clear, cloudy, args.output_dir, args.count, args.patch_size, args.seed
     )

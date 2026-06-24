@@ -57,6 +57,28 @@ A filesystem audit also found no `.tif` or `.tiff` products in the project works
 
 Verification status: 13 tests pass, lint is clean and the Streamlit page loads without exceptions.
 
+## Completed — First real-data intake and smoke run
+
+Downloaded Bhoonidhi products now present locally:
+
+- Clear ZIPs: 2
+- Cloudy ZIPs: 3
+- All audited products are LISS-IV/L4FX, three-band `234`, GeoTIFF, standard georeferenced products in UTM zone 46.
+
+Because the laptop currently has only limited free disk space and no NVIDIA CUDA device, full BAND2/BAND3/BAND4 scene extraction/training was avoided. The code now supports reading Bhoonidhi ZIP metadata and browse previews without full extraction.
+
+Smoke validation completed:
+
+- Created a lightweight browse-image patch bank: 20 train / 20 validation.
+- Trained a 2-epoch CPU smoke checkpoint at `checkpoints/smoke/best.pt`.
+- Ran operational prediction and generated:
+  - `outputs/smoke_demo/products/reconstructed_liss.tif`
+  - `outputs/smoke_demo/products/cloud_shadow_mask.tif`
+  - `outputs/smoke_demo/products/confidence_map.tif`
+  - `outputs/smoke_demo/products/preview_before_after.png`
+  - `outputs/smoke_demo/products/quality_report.json`
+- This smoke checkpoint verifies the pipeline only; final competition metrics require training on full-band patches from the original GeoTIFF bands.
+
 ## User handoff required
 
 1. Open the Bhoonidhi login page in Chrome.

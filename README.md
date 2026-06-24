@@ -63,6 +63,14 @@ Create a rough correction-ready mask and synthetic training patches:
 .venv\Scripts\python.exe -m src.create_synthetic_clouds --count 3000 --patch-size 128
 ```
 
+For a low-disk CPU-only smoke run using downloaded Bhoonidhi ZIP browse previews:
+
+```powershell
+.venv\Scripts\python.exe -m src.audit_bhoonidhi_zips
+.venv\Scripts\python.exe -m src.create_browse_demo_patches --count 40 --patch-size 64
+.venv\Scripts\python.exe -m src.train --config configs/smoke.yaml
+```
+
 Train and evaluate Model 1:
 
 ```powershell

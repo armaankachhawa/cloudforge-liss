@@ -1,0 +1,32 @@
+project: CloudForge-LISS
+seed: 42
+
+data:
+  patch_size: 64
+  input_channels: 5
+  output_channels: 3
+  manifest: data/processed/manifests/patch_manifest.csv
+
+model:
+  name: attention_resunet
+  base_channels: 8
+
+training:
+  epochs: 2
+  batch_size: 4
+  learning_rate: 0.0002
+  optimizer: adamw
+  mixed_precision: false
+  device: cpu
+  workers: 0
+  checkpoint_dir: checkpoints/smoke
+
+loss:
+  masked_l1: 0.60
+  masked_ssim: 0.20
+  spectral_angle: 0.15
+  edge: 0.05
+
+inference:
+  preserve_clear_pixels: true
+  output_dir: outputs
